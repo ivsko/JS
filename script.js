@@ -5,6 +5,19 @@ function calculate() {
   const mg1 = parseFloat(document.getElementById("mg1").value);
   const mg2 = parseFloat(document.getElementById("mg2").value);
 
+  function updateSize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+  
+    document.getElementById("size").textContent = `${width} x ${height}`;
+  }
+  
+  // Стартирай при зареждане
+  updateSize();
+  
+  // Обновявай при промяна на размера на прозореца
+  window.addEventListener('resize', updateSize);
+
   if (isNaN(m1) || isNaN(s1) || isNaN(s2) || isNaN(mg1)|| isNaN(mg2)) {
     alert("Моля, попълни всички стойности!");
     return;
