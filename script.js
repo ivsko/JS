@@ -5,7 +5,27 @@ function calculate() {
   const mg1 = parseFloat(document.getElementById("mg1").value);
   const mg2 = parseFloat(document.getElementById("mg2").value);
 
+  
 
+  const inputs = document.querySelectorAll('.positive-only');
+const error = document.getElementById('error');
+
+inputs.forEach(input => {
+  input.addEventListener('input', () => {
+    if (parseFloat(input.value) < 0) {
+      error.style.display = 'block';
+      input.value = '';
+    } else {
+      error.style.display = 'none';
+    }
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === '-' || e.key === 'e') {
+      e.preventDefault();
+    }
+  });
+});
 
   if (isNaN(m1) || isNaN(s1) || isNaN(s2) || isNaN(mg1)|| isNaN(mg2)) {
     alert("Моля, попълни всички стойности!");
