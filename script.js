@@ -8,6 +8,7 @@ function calculate() {
   
 
   const inputs = document.querySelectorAll('.positive-only');
+  
 const error = document.getElementById('error');
 
 inputs.forEach(input => {
