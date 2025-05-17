@@ -5,10 +5,11 @@
   <title>Метал Калкулатор</title>
 </head>
 <body>
+
   <h1>Калкулатор за модифициране на метал с жица</h1>
 
   <label for="m1">Избери вместимост на кофа:</label><br>
-  <select id="m1">
+  <select id="m1" >
   <option value="500">500</option>
   <option value="700">700</option>
   <option value="750">750</option>
@@ -17,16 +18,18 @@
   
 
   <label for="s1">Съдържание на S- сяра в стопилката (S, %):</label><br>
-  <input type="number" id="s1" step="any"><br><br>
+  <input type="number" id="s1" class="positive-only"><br><br>
 
   <label for="s2">Желано съдържание на S- сяра в стопилата (S, %):</label><br>
-  <input type="number" id="s2" step="any"><br><br>
+  <input type="number" id="s2" class="positive-only"><br><br>
 
   <label for="mg1">Желано съдържание на Mg в стопилката (Mg, %):</label><br>
-  <input type="number" id="mg1" step="any"><br><br>
+  <input type="number" id="mg1" class="positive-only" ><br><br>
 
   <label for="mg2">Скорост на подаване на жицата (м/мин):</label><br>
-  <input type="number" id="mg2" step="any"><br><br>
+  <input type="number" id="mg2" class="positive-only" ><br><br>
+
+  <p id="error" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
 
   <button onclick="calculate()">Изчисли</button>
 
