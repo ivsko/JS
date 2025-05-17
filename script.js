@@ -1,17 +1,3 @@
-function updateSize() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const sizeDisplay = document.getElementById("size");
-  if (sizeDisplay) {
-    sizeDisplay.textContent = `${width}px × ${height}px`;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", updateSize);
-window.addEventListener("resize", updateSize);
-
-
-
 function calculate() {
   const m1 = parseFloat(document.getElementById("m1").value);
   const s1 = parseFloat(document.getElementById("s1").value);
