@@ -25,20 +25,37 @@
   <label for="s1">Съдържание на S- сяра в стопилката (S, %):</label><br>
   <input type="number" id="s1" class="positive-only"><br><br>
 
-  <label for="s2">Желано съдържание на S- сяра в стопилата (S, %):</label><br>
-  <input type="number" id="s2" class="positive-only"><br><br>
-
-  <label for="mg1">Желано съдържание на Mg в стопилката (Mg, %):</label><br>
-  <input type="number" id="mg1" class="positive-only" ><br><br>
-
-  <label for="mg2">Скорост на подаване на жицата (м/мин):</label><br>
-  <input type="number" id="mg2" class="positive-only" ><br><br>
+  <label for="speedOFWire">Скорост на подаване на жицата (м/мин):</label><br>
+  <input type="number" id="speedOfWire" class="positive-only" ><br><br>
 
   <p id="error" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
+  <p id="messageGood" style="color:green; display:none">Теоретично усвояване над 35%!</p>
+  <p id="messagePoor" style="color:red; display:none">Теоретично усвояване под 35%!</p>
+
 
   <button onclick="calculate()">Изчисли</button>
 
-  <h2>Резултат: <span id="result">–</span>Метра</h2>
+  <h2>Резултат: <span id="result">–</span> Метра </h2>
+
+  
+
+
+ <div id="myForm" style="display: none">
+  
+    
+  <label for="lenghtOfWire">Използвани мерта жица (м/мин):</label><br>
+  <input type="number" id="lenghtOfWire" class="positive-only" ><br><br>
+    
+    
+  <label for="residualMg">Въведи остатъчния Mg от анализа (%):</label><br>
+  <input type="number" id="residualMg" class="positive-only" ><br><br> 
+    
+  <p id="error2" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
+
+  <button onclick="calculateMg()">Изчисли увояване</button>
+  <h2>Резултат: <span id="result1">–</span>%</h2>
+  
+</div>
 
   <script src="script.js"></script>
 </body>
