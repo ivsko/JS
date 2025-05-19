@@ -1,38 +1,62 @@
-body {
-  margin: 30;
-  padding: 30;
-  font-family: Arial, sans-serif;
-  background: #eef2f5;}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <title>Метал Калкулатор</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Размер на екрана</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-/* Контейнер */
-#box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px; /* Това ще раздалечи ВСИЧКИ директни деца по височина */
-  padding: 30px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
 
-/* Стил за бутони */
-button {
-  font-size: 1.2rem;
-  padding: 12px 24px;
-  border: none;
-  background-color: #007acc;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
+  <h1>Калкулатор за модифициране на метал с жица</h1>
 
-button:hover {
-  background-color: #005fa3;
-}
+  <label for="m1">Избери вместимост на кофа:</label><br>
+  <select id="m1" >
+  <option value="500">500</option>
+  <option value="700">700</option>
+  <option value="750">750</option>
+  </select><br><br>
+  
+  
 
-/* Текст */
-.info {
-  font-size: 1.5rem;
-}
+  <label for="s1">Съдържание на S- сяра в стопилката (S, %):</label><br>
+  <input type="number" id="s1" class="positive-only"><br><br>
+
+  <label for="speedOFWire">Скорост на подаване на жицата (м/мин):</label><br>
+  <input type="number" id="speedOfWire" class="positive-only" ><br><br>
+
+  <p id="error" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
+  <p id="messageGood" style="color:green; display:none">Теоретично усвояване над 35%!</p>
+  <p id="messagePoor" style="color:red; display:none">Теоретично усвояване под 35%!</p>
+
+
+  <button onclick="calculate()">Изчисли</button>
+
+  <h2>Резултат: <span id="result">–</span> Метра </h2>
+
+  
+
+
+ <div id="myForm" style="display: none">
+  
+    
+  <label for="lenghtOfWire">Използвани мерта жица (м/мин):</label><br>
+  <input type="number" id="lenghtOfWire" class="positive-only" ><br><br>
+    
+    
+  <label for="residualMg">Въведи остатъчния Mg от анализа (%):</label><br>
+  <input type="number" id="residualMg" class="positive-only" ><br><br> 
+    
+  <p id="error2" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
+
+  <button onclick="calculateMg()">Изчисли увояване</button>
+  <h2>Резултат: <span id="result1">–</span>%</h2>
+  
+</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
