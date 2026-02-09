@@ -107,4 +107,5 @@ function resetAll() {
   document.getElementById('myForm').style.display = 'none';
   document.getElementById('speedInfo').style.display = 'none';
   document.getElementById('mgResultLine').style.display = 'none';
+  document.getElementById('wireResult').style.display = 'none';
 }
