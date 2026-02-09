@@ -1,58 +1,133 @@
-<!DOCTYPE html>
-<html lang="bg">
-<head>
-  <meta charset="UTF-8">
-  <title>Метал Калкулатор</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+/* Нулиране */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-<div class="container">
+/* Тъмна тема */
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0d1117; /* тъмно графитено */
+  color: #e6edf3;      /* светъл текст */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
 
-  <h1>Калкулатор за модифициране на метал с жица</h1>
+/* Контейнер */
+.container {
+  background: #161b22; /* тъмно-сив панел */
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid #30363d;
+  animation: fadeIn 0.4s ease;
+}
 
-  <label for="m1">Вместимост на кофа (кг):</label>
-  <input type="number" id="m1" class="positive-only">
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  <label for="s1">Сяра в стопилката (S, %):</label>
-  <input type="number" id="s1" class="positive-only">
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2ea043; /* неоново синьо */
+}
 
-  <label for="speedOfWire">Скорост на подаване (м/мин):</label>
-  <input type="number" id="speedOfWire" class="positive-only">
-  <p id="speedInfo" class="message" style="display:none;"></p>
-  <p id="error" class="message">Моля, без отрицателни стойности!</p>
-  <p id="messageGood" class="message">Mg > 0.048% и усвояване > 35%</p>
-  <p id="messagePoor" class="message">Mg < 0.048% и усвояване < 35%</p>
-  
+/* Полета */
+label {
+  font-weight: 600;
+  margin-top: 15px;
+  display: block;
+  color: #c9d1d9;
+}
 
-  <button onclick="calculate()">Изчисли</button>
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #0d1117;
+  color: #e6edf3;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
 
-  <h2 id="wireResult" style="display:none;">
-  Влагаме: <span id="result">–</span> м жица
-</h2>
+input:focus {
+  border-color:  #2ea043;
+  outline: none;
+}
+
+/* Бутон */
+button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  background-color: #2ea043; /* зелено като GitHub success */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+button:hover {
+  background-color: #2ea043;
+  transform: scale(1.03);
+}
+
+/* Бутон Нулиране */
+.reset-btn {
+  background-color: #8b0000;
+}
+
+.reset-btn:hover {
+  background-color: #b30000;
+}
+
+/* Съобщения */
+.message {
+  margin-top: 15px;
+  font-weight: bold;
+  display: none;
+  text-align: center;        /* центриране */
+  padding: 10px 12px;        /* леко оформление */
+  border-radius: 8px;
+  background: #21262d;       /* тъмен блок */
+  border: 1px solid #30363d; /* лек контур */
+}
 
 
-  <div id="myForm">
+#messageGood { color: #2ea043; }
+#messagePoor { color: #ff4d4d; }
+#error, #error2 { color: #ff4d4d; }
 
-    <label for="lenghtOfWire">Използвани метра жица:</label>
-    <input type="number" id="lenghtOfWire" class="positive-only">
+/* Резултати */
+.result-box {
+  margin-top: 20px;
+  padding: 15px;
+  background: #21262d;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2ea043;
+  border: 1px solid #30363d;
+}
 
-    <label for="residualMg">Остатъчен Mg (%):</label>
-    <input type="number" id="residualMg" class="positive-only">
+/* Скритата форма */
+#myForm {
+  margin-top: 25px;
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
 
-    <p id="error2" class="message">Моля, без отрицателни стойности!</p>
-
-    <button type="button" onclick="calculateMg()">Изчисли усвояване</button>
-
-    <h2 id="mgResultLine">Усвояване на Mg – <span id="result1">–</span>%</h2>
-
-
-  </div>
-  <p id="mgMessage" class="message" style="display:none;"></p> <button type="button" onclick="resetAll()" style="margin-top:20px;"> Нулиране </button>
-  <div class="developer-tag"> Разработено от: <span>инж.Иван Колев</span> 
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+.developer-tag { margin-top: 30px; text-align: center; font-size: 0.9rem; color: #8b949e; /* леко сиво */ opacity: 0.85; padding-top: 15px; border-top: 1px solid #30363d; } .developer-tag span { color:  #2ea043; /* неоново син акцент */ font-weight: 600; }
