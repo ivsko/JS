@@ -1,59 +1,58 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8" />
-  <title>Метал Калкулатор</title>
   <meta charset="UTF-8">
+  <title>Метал Калкулатор</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Размер на екрана</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<div class="container">
 
   <h1>Калкулатор за модифициране на метал с жица</h1>
 
-  <label for="m1">Избери вместимост на кофа (кг):</label><br>
-  <input type="number" id="m1" class="positive-only"><br><br>
- 
+  <label for="m1">Вместимост на кофа (кг):</label>
+  <input type="number" id="m1" class="positive-only">
+
+  <label for="s1">Сяра в стопилката (S, %):</label>
+  <input type="number" id="s1" class="positive-only">
+
+  <label for="speedOfWire">Скорост на подаване (м/мин):</label>
+  <input type="number" id="speedOfWire" class="positive-only">
+  <p id="speedInfo" class="message" style="display:none;"></p>
+  <p id="error" class="message">Моля, без отрицателни стойности!</p>
+  <p id="messageGood" class="message">Mg > 0.048% и усвояване > 35%</p>
+  <p id="messagePoor" class="message">Mg < 0.048% и усвояване < 35%</p>
   
-  
-
-  <label for="s1">Съдържание на S- сяра в стопилката (S, %):</label><br>
-  <input type="number" id="s1" class="positive-only"><br><br>
-
-  <label for="speedOFWire">Скорост на подаване на жицата (м/мин):</label><br>
-  <input type="number" id="speedOfWire" class="positive-only" ><br><br>
-
-  <p id="error" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
-  <p id="messageGood" style="color:green; display:none">Mg>0,048% и усвояване >35%!</p>
-  <p id="messagePoor" style="color:red; display:none">Mg&lt0,048% и усвояване &lt35%!</p>
-
 
   <button onclick="calculate()">Изчисли</button>
 
-  <h2>Влагаме: <span id="result">–</span> Метра жица </h2>
+  <h2 id="wireResult" style="display:none;">
+  Влагаме: <span id="result">–</span> м жица
+</h2>
 
-  
+
+  <div id="myForm">
+
+    <label for="lenghtOfWire">Използвани метра жица:</label>
+    <input type="number" id="lenghtOfWire" class="positive-only">
+
+    <label for="residualMg">Остатъчен Mg (%):</label>
+    <input type="number" id="residualMg" class="positive-only">
+
+    <p id="error2" class="message">Моля, без отрицателни стойности!</p>
+
+    <button type="button" onclick="calculateMg()">Изчисли усвояване</button>
+
+    <h2 id="mgResultLine">Усвояване на Mg – <span id="result1">–</span>%</h2>
 
 
- <div id="myForm" style="display: none">
-  
-    
-  <label for="lenghtOfWire">Използвани мерта жица (м/мин):</label><br>
-  <input type="number" id="lenghtOfWire" class="positive-only" ><br><br>
-    
-    
-  <label for="residualMg">Въведи остатъчния Mg от анализа (%):</label><br>
-  <input type="number" id="residualMg" class="positive-only" ><br><br> 
-    
-  <p id="error2" style="color:red; display:none;">Моля, без отрицателни стойности!</p>
-
-  <button onclick="calculateMg()">Изчисли увояване</button>
-  <h2>Усвояване на Mg- <span id="result1">–</span>%</h2>
-  
+  </div>
+  <p id="mgMessage" class="message" style="display:none;"></p> <button type="button" onclick="resetAll()" style="margin-top:20px;"> Нулиране </button>
+  <div class="developer-tag"> Разработено от: <span>инж.Иван Колев</span> 
 </div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
