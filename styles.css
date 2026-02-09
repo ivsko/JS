@@ -1,90 +1,58 @@
-/* Основни настройки */
-* {
-  box-sizing: border-box;
-  margin: 50;
-  padding: 30;
-}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Метал Калкулатор</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #eef2f5;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
- flex-direction: column;
- margin: 0;
-  padding: 0;
-}
+<div class="container">
 
-.positive-only {
-  margin-top: 2px;
-  width: 150px;            /* задаваш фиксирана ширина */
-  max-width: 90%;          /* адаптивност при малки екрани */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+  <h1>Калкулатор за модифициране на метал с жица</h1>
 
-#m1 {
-  width: 150px;            /* задаваш фиксирана ширина */
-  max-width: 90%;          /* адаптивност при малки екрани */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+  <label for="m1">Вместимост на кофа (кг):</label>
+  <input type="number" id="m1" class="positive-only">
 
-/* Стил за бутоните */
-button {
-  font-size: 1.2rem;
-  padding: 12px 24px;
-  background-color: #007acc;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  padding-top: 80;
-}
+  <label for="s1">Сяра в стопилката (S, %):</label>
+  <input type="number" id="s1" class="positive-only">
 
-/* Ховър ефект */
-button:hover {
-  background-color: #005fa3;
-  transform: scale(1.05);
-}
-
-
-
-  button {
-    font-size: 1rem;
-    margin-top: 20px;
-    width: 200px;
-  }
-
-
-  label {
-    margin-top: 15px;
-    margin-bottom: 5px;     /* Разстояние между label и input */
-    font-weight: bold;
-  }
-#myForm{
-  display: flex;
-  flex-direction: column;
-  align-items: center;  /* 💡 Това е ключовото - центрира вътрешните елементи по хоризонтала */
- 
-}
-
-#messageGood {
-  margin-top: 15px;
-  margin-bottom: 5px;     /* Разстояние между label и input */
-  font-weight: bold;
-}
+  <label for="speedOfWire">Скорост на подаване (м/мин):</label>
+  <input type="number" id="speedOfWire" class="positive-only">
+  <p id="speedInfo" class="message" style="display:none;"></p>
+  <p id="error" class="message">Моля, без отрицателни стойности!</p>
+  <p id="messageGood" class="message">Mg > 0.048% и усвояване > 35%</p>
+  <p id="messagePoor" class="message">Mg < 0.048% и усвояване < 35%</p>
   
- 
-#messagePoor {
-  margin-top: 15px;
-  margin-bottom: 5px;     /* Разстояние между label и input */
-  font-weight: bold;
-}
 
+  <button onclick="calculate()">Изчисли</button>
+
+  <h2 id="wireResult" style="display:none;">
+  Влагаме: <span id="result">–</span> м жица
+</h2>
+
+
+  <div id="myForm">
+
+    <label for="lenghtOfWire">Използвани метра жица:</label>
+    <input type="number" id="lenghtOfWire" class="positive-only">
+
+    <label for="residualMg">Остатъчен Mg (%):</label>
+    <input type="number" id="residualMg" class="positive-only">
+
+    <p id="error2" class="message">Моля, без отрицателни стойности!</p>
+
+    <button type="button" onclick="calculateMg()">Изчисли усвояване</button>
+
+    <h2 id="mgResultLine">Усвояване на Mg – <span id="result1">–</span>%</h2>
+
+
+  </div>
+  <p id="mgMessage" class="message" style="display:none;"></p> <button type="button" onclick="resetAll()" style="margin-top:20px;"> Нулиране </button>
+  <div class="developer-tag"> Разработено от: <span>инж.Иван Колев</span> 
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
