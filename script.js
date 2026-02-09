@@ -106,4 +106,5 @@ function resetAll() {
   document.getElementById('mgMessage').style.display = 'none';
   document.getElementById('myForm').style.display = 'none';
   document.getElementById('speedInfo').style.display = 'none';
+  document.getElementById('mgResultLine').style.display = 'none';
 }
