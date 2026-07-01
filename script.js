@@ -45,7 +45,7 @@ function calculate() {
 
   if (speed < 20) {
     speedInfo.textContent =
-      'Скорост на подаване: ниска. Провери температурата, стабилността на инсталацията и условията на обработка.';
+      'Скорост на подаване: ниска. Провери температурата, стабилността на инсталацията и условията на обработка, (оптимална 20–23 м/мин).';
     speedInfo.style.color = 'orange';
     speedInfo.style.display = 'block';
   } else if (speed >= 20 && speed <= 23) {
@@ -54,7 +54,7 @@ function calculate() {
     speedInfo.style.display = 'block';
   } else {
     speedInfo.textContent =
-      'Скорост на подаване: висока. Следи за пръски, нестабилно усвояване и влиянието върху температурата.';
+      'Скорост на подаване: висока. Следи за пръски, нестабилно усвояване и влиянието върху температурата, (оптимална 20–23 м/мин).';
     speedInfo.style.color = 'orange';
     speedInfo.style.display = 'block';
   }
@@ -86,12 +86,12 @@ function calculateMg() {
   } else if (result >= 30) {
     mgLine.style.color = 'orange';
     msgBox.textContent =
-      'Усвояването е средно. Провери температурата и скоростта на подаване.';
+      'Усвояването е средно. Провери температурата и скоростта на подаване. Заложен минимум 0,045%';
     msgBox.style.color = 'orange';
   } else {
     mgLine.style.color = 'red';
     msgBox.textContent =
-      'Усвояването е ниско. Необходими са незабавни корекции.';
+      'Усвояването е ниско. Необходими са незабавни корекции. Заложен минимум 0,045%';
     msgBox.style.color = 'red';
   }
 
