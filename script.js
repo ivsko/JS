@@ -165,10 +165,10 @@ function calculateMg() {
     }
 
     operatorStatus.textContent = `Остатъчният Mg (${residualMg}%) е висок, но в норма (0.052% – 0.060%).`;
-    operatorStatus.className = 'status-box success';
+    operatorStatus.className = 'status-box warning';
 
     mgStatus.textContent = `Добър химичен състав с повишена съдържаемост на Mg.`;
-    mgStatus.className = 'status-box success';
+    mgStatus.className = 'status-box warning';
 
     actions.push(`<strong>1. Запазете метража:</strong> Метражът жица е стабилен, не променяйте предписанието.`);
     if (suggestedSpeed < currentSpeed) {
