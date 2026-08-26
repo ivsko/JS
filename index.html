@@ -2,58 +2,126 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Метал Калкулатор</title>
+  <title>Модифициране на метал с жица | Индустриално Табло</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container">
-
-  <h1>Калкулатор за модифициране на метал с жица</h1>
-
-  <label for="m1">Вместимост на кофа (кг):</label>
-  <input type="number" id="m1" class="positive-only">
-
-  <label for="s1">Сяра в стопилката (S, %):</label>
-  <input type="number" id="s1" class="positive-only">
-
-  <label for="speedOfWire">Скорост на подаване (м/мин):</label>
-  <input type="number" id="speedOfWire" class="positive-only">
-  <p id="speedInfo" class="message" style="display:none;"></p>
-  <p id="error" class="message">Моля, без отрицателни стойности!</p>
-  <p id="messageGood" class="message">Mg > 0.048% и усвояване > 35%</p>
-  <p id="messagePoor" class="message">Mg < 0.048% и усвояване < 35%</p>
+<div class="app-card">
+  <!-- Хедър -->
+  <div class="card-header">
+  <!-- Истинското лого замества Mg иконката -->
+  <img src="https://raw.githubusercontent.com/ivsko/JS/main/bg.png" alt="Лого" class="main-logo">
   
-
-  <button onclick="calculate()">Изчисли</button>
-
-  <h2 id="wireResult" style="display:none;">
-  Влагаме: <span id="result">–</span> м жица
-</h2>
-
-
-  <div id="myForm">
-
-    <label for="lenghtOfWire">Използвани метра жица:</label>
-    <input type="number" id="lenghtOfWire" class="positive-only">
-
-    <label for="residualMg">Остатъчен Mg (%):</label>
-    <input type="number" id="residualMg" class="positive-only">
-
-    <p id="error2" class="message">Моля, без отрицателни стойности!</p>
-
-    <button type="button" onclick="calculateMg()">Изчисли усвояване</button>
-
-    <h2 id="mgResultLine">Усвояване на Mg – <span id="result1">–</span>%</h2>
-
-
+  <div class="header-text">
+    <h2>Метал Модификатор</h2>
+    <p>Калкулатор за модифициране с жица</p>
   </div>
-  <p id="mgMessage" class="message" style="display:none;"></p> <button type="button" onclick="resetAll()" style="margin-top:20px;"> Нулиране </button>
-  <div class="developer-tag"> Разработил: <span>инж.Иван Колев</span> 
+</div>
+
+  <!-- Навигационни табове -->
+  <nav class="step-nav">
+    <button id="tab1" class="tab-btn active" onclick="switchTab(1)">
+      <span>1</span> Расчет на жица
+    </button>
+    <button id="tab2" class="tab-btn" onclick="switchTab(2)">
+      <span>2</span> Лабораторен анализ
+    </button>
+  </nav>
+
+  <!-- СТЪПКА 1: Изчисление на метри жица -->
+  <section id="step1" class="step-content active">
+    <div class="input-grid">
+      <div class="input-card">
+        <label for="m1">Вместимост на кофата (кг)</label>
+        <input type="number" id="m1" value="1000" class="positive-only" inputmode="decimal">
+      </div>
+
+      <div class="input-card">
+        <label for="s1">Начална сяра (S, %)</label>
+        <input type="number" id="s1" value="0.020" step="0.001" class="positive-only" inputmode="decimal">
+      </div>
+
+      <div class="input-card full-width">
+        <div class="label-row">
+          <label for="speedOfWire">Скорост на подаване (м/мин)</label>
+          <span id="speedValueDisplay" class="badge">21 м/мин</span>
+        </div>
+        <input type="range" id="speedOfWire" min="10" max="35" value="21" class="slider">
+      </div>
+    </div>
+
+    <!-- Резултат Стъпка 1 -->
+    <div class="result-dashboard">
+      <div class="metric">
+        <span class="metric-label">Препоръчителен метраж</span>
+        <div class="metric-value"><span id="wireResultDisplay">–</span> <small>метра</small></div>
+      </div>
+      <div id="speedStatus" class="status-box info">
+        Изберете скорост, за да видите препоръки.
+      </div>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 2: Анализ и Корекция -->
+  <section id="step2" class="step-content">
+    <div class="target-summary-box">
+      <span>Заложен метраж по предписание:</span>
+      <strong id="targetWireSummary">– м</strong>
+    </div>
+
+    <div class="input-grid">
+      <div class="input-card">
+        <label for="lenghtOfWire">Реално вложена жица (м)</label>
+        <input type="number" id="lenghtOfWire" class="positive-only" inputmode="decimal" placeholder="напр. 28.5">
+      </div>
+
+      <div class="input-card">
+        <label for="residualMg">Остатъчен Mg (%)</label>
+        <input type="number" id="residualMg" class="positive-only" inputmode="decimal" step="0.001" placeholder="напр. 0.045">
+      </div>
+
+      <div class="input-card full-width">
+        <div class="label-row">
+          <label for="speedOfWireStep2">Работна скорост на подаване (м/мин)</label>
+          <span id="speedValueDisplayStep2" class="badge">21 м/мин</span>
+        </div>
+        <input type="range" id="speedOfWireStep2" min="10" max="35" value="21" class="slider">
+      </div>
+    </div>
+
+    <button class="action-btn" onclick="calculateMg()">Анализирай и изчисли корекция</button>
+
+    <!-- Резултат Стъпка 2 -->
+    <div id="mgAnalysisBox" class="result-dashboard hidden">
+      <div class="metric">
+        <span class="metric-label">Реално усвояване</span>
+        <div class="metric-value"><span id="mgResultDisplay">–</span> <small>%</small></div>
+      </div>
+
+      <div class="speed-recommendation-card">
+        <span class="speed-rec-label">Препоръчителна скорост (следваща кофа):</span>
+        <div class="speed-rec-value" id="recommendedSpeedDisplay">21 м/мин</div>
+      </div>
+
+      <div id="operatorStatus" class="status-box"></div>
+      <div id="mgStatus" class="status-box"></div>
+
+      <div class="action-plan-card">
+        <h4>📋 Технологични корекции:</h4>
+        <ul id="actionPlanList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Футър -->
+  <footer class="app-footer">
+  <button class="reset-link" onclick="resetAll()">Нулиране на данните</button>
+  <div class="dev-tag">Разработка: <span>инж. Иван Колев</span></div>
+</footer>
 </div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
