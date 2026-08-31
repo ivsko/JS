@@ -137,135 +137,136 @@ function calculateMg() {
   let actions = [];
   let suggestedSpeed = currentSpeed;
 
-  // Изчисляване на разликата между фактически вложената и изчислената жица
+  // 1. Изчисляване на разликата между фактически вложената и изчислената жица
   const diffMeters = actualLength - calculatedTargetWire;
   const absDiff = Math.abs(diffMeters).toFixed(1);
   const diffPercent = (diffMeters / calculatedTargetWire) * 100;
 
-  // 1. АНАЛИЗ НА СЪОТВЕТСТВИЕТО НА МЕТРАЖА (Операторски статус)
   let lengthStatusText = "";
   let isLengthOk = Math.abs(diffPercent) <= 2.5; // Толеранс до ±2.5%
 
   if (isLengthOk) {
-    lengthStatusText = `Метражът е спазен точно (Вложени: ${actualLength} м / Предписани: ${calculatedTargetWire.toFixed(1)} м).`;
+    lengthStatusText = `Метражът е спазен (Вложени: ${actualLength} м / Предписани: ${calculatedTargetWire.toFixed(1)} м).`;
   } else if (diffMeters > 0) {
-    lengthStatusText = `ОТКЛОНЕНИЕ (ПРЕРАЗХОД): Подадени са +${absDiff} м Повече от предписаното!`;
+    lengthStatusText = `ОТКЛОНЕНИЕ: Подадени са +${absDiff} м повече от предписаното!`;
   } else {
-    lengthStatusText = `ОТКЛОНЕНИЕ (НЕДОСТИГ): Подадени са -${absDiff} м По-малко от предписаното!`;
+    lengthStatusText = `ОТКЛОНЕНИЕ: Подадени са -${absDiff} м по-малко от предписаното!`;
   }
 
-  // 2. АНАЛИЗ НА МАГНЕЗИЯ И ОПРЕДЕЛЯНЕ НА МЕРКИТЕ
-  const isMgOptimalLow = residualMg >= MG_TARGET_MIN && residualMg < MG_HIGH_SOFT;   // 0.043% - 0.049%
-  const isMgOptimalHigh = residualMg >= MG_HIGH_SOFT && residualMg <= MG_TARGET_MAX; // 0.050% - 0.060%
-  const isMgWarning = residualMg >= MG_WARN_MIN && residualMg <= MG_WARN_MAX;         // 0.040% - 0.042%
-  const isMgCriticalLow = residualMg < MG_WARN_MIN;                                    // < 0.040%
-  const isMgStrictOver = residualMg > MG_TARGET_MAX;                                   // > 0.060%
+  // 2. ДИНАМИЧНИ ПРАГОВЕ НА МАГНЕЗИЯ
+  const isMgOptimalLow = residualMg >= MG_TARGET_MIN && residualMg < MG_HIGH_SOFT;   // 0.042% - 0.0519% (Идеален)
+  const isMgOptimalHigh = residualMg >= MG_HIGH_SOFT && residualMg <= MG_TARGET_MAX; // 0.052% - 0.060% (Повишен)
+  const isMgWarning = residualMg >= MG_WARN_MIN && residualMg <= MG_WARN_MAX;         // 0.035% - 0.041% (Внимание)
+  const isMgCriticalLow = residualMg < MG_WARN_MIN;                                    // < 0.035% (Критично нисък)
+  const isMgStrictOver = residualMg > MG_TARGET_MAX;                                   // > 0.060% (Твърдо премодифициране)
 
-  // 2A. ИДЕАЛЕН ОПТИМАЛЕН РЕЖИМ (0.043% - 0.049%)
+  // 2A. ИДЕАЛЕН ОПТИМАЛЕН РЕЖИМ (0.042% - 0.051%) -> Зелен цвят
   if (isMgOptimalLow) {
     suggestedSpeed = currentSpeed;
     operatorStatus.textContent = lengthStatusText;
     operatorStatus.className = isLengthOk ? 'status-box success' : 'status-box warning';
     
-    mgStatus.textContent = `Остатъчен Mg (${residualMg}%): Отличен резултат.`;
+    mgStatus.textContent = `Остатъчен Mg (${residualMg}%): В оптимални граници.`;
     mgStatus.className = 'status-box success';
 
-    if (!isLengthOk && diffMeters < 0) {
-      actions.push(`<strong>Забележка за метража:</strong> Въпреки недостига от -${absDiff} м, Mg е в норма. Внимавайте при следващата кофа.`);
-    } else if (!isLengthOk && diffMeters > 0) {
-      actions.push(`<strong>Забележка за метража:</strong> Налице е преразход (+${absDiff} м). Върнете се към базовото предписание.`);
+    if (!isLengthOk && diffMeters < -0.5) {
+      actions.push(`<strong>Забележка за метража:</strong> Въпреки недостига от -${absDiff} м жица, Mg е в норма. Спазвайте предписанието.`);
+    } else if (!isLengthOk && diffMeters > 0.5) {
+      actions.push(`<strong>Забележка за метража:</strong> Има преразход (+${absDiff} м). Върнете се към изчислената стойност.`);
     } else {
       actions.push(`<strong>1. Запазете метража:</strong> Продължете със същото предписание.`);
     }
     actions.push(`<strong>2. Поддържайте скоростта:</strong> Запазете текущата скорост от ${currentSpeed} м/мин.`);
   } 
-  // 2B. ПОВИШЕН Mg (0.050% - 0.060%) -> ЖЪЛТ ЦВЯТ
+  // 2B. ПОВИШЕН Mg В ДОПУСТИМАТА ЗОНА (0.052% - 0.060%) -> Жълт цвят (Оптимизация)
   else if (isMgOptimalHigh) {
     if (currentSpeed > ABSOLUTE_SPEED_MIN) {
       suggestedSpeed = Math.max(ABSOLUTE_SPEED_MIN, currentSpeed - 1);
     }
 
-    operatorStatus.textContent = `${lengthStatusText} | Mg е в горна граница (${residualMg}%).`;
+    operatorStatus.textContent = `${lengthStatusText} | Повишен остатъчен Mg (${residualMg}%).`;
     operatorStatus.className = 'status-box warning';
 
-    mgStatus.textContent = `Повишено съдържание на Mg (в граници, но близо до горна норма).`;
+    mgStatus.textContent = `Повишено съдържание на Mg (${residualMg}%). Налице е високо усвояване.`;
     mgStatus.className = 'status-box warning';
 
-    if (diffMeters > 0) {
-      actions.push(`<strong>1. Преразход на жица:</strong> Високият Mg се дължи на подадени +${absDiff} м повече. Спазвайте точното предписание!`);
+    if (diffMeters > 0.5) {
+      actions.push(`<strong>1. Препоръка за метраж:</strong> Има реално предозиране (+${absDiff} м). Върнете се към базовото предписание и го намалете с <strong>-0.5 м</strong>.`);
+    } else if (diffMeters < -0.5) {
+      actions.push(`<strong>1. Препоръка за метраж:</strong> Усвояването е много високо (Mg е висок въпреки недостига от -${absDiff} м). Намалете предписанието с <strong>-1.0 м</strong>.`);
     } else {
-      actions.push(`<strong>1. Запазете метража:</strong> Не увеличавайте жицата при следващата кофа.`);
+      actions.push(`<strong>1. Препоръка за метраж:</strong> Метражът е спазен, но усвояването е високо. За следващата кофа намалете предписания метраж с <strong>-0.5 м до -1.0 м</strong>.`);
     }
 
     if (suggestedSpeed < currentSpeed) {
-      actions.push(`<strong>2. Подсказка за скорост:</strong> Препоръчва се намаляване на скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
+      actions.push(`<strong>2. Препоръка за скорост:</strong> Намалете скоростта от ${currentSpeed} на <strong>${suggestedSpeed} м/мин</strong> за плавно сваляне на Mg и икономия.`);
     } else {
-      actions.push(`<strong>2. Подсказка за скорост:</strong> Скоростта е на долния толеранс (${ABSOLUTE_SPEED_MIN} м/мин).`);
+      actions.push(`<strong>2. Препоръка за скорост:</strong> Скоростта е на долния толеранс (${ABSOLUTE_SPEED_MIN} м/мин). Не я намалявайте повече.`);
     }
   }
-  // 2C. ЗОНА ЗА ВНИМАНИЕ (0.040% - 0.042%)
+  // 2C. ЗОНА ЗА ВНИМАНИЕ (0.035% - 0.041%) -> Жълт цвят
   else if (isMgWarning) {
-    operatorStatus.textContent = `${lengthStatusText} | Mg пада към критичната граница (${residualMg}%).`;
+    operatorStatus.textContent = `${lengthStatusText} | Нисък Mg (${residualMg}%).`;
     operatorStatus.className = 'status-box warning';
 
-    mgStatus.textContent = `Предупреждение: Необходима е превантивна корекция.`;
+    mgStatus.textContent = `Предупреждение: Остатъчният Mg пада към долната допустима граница.`;
     mgStatus.className = 'status-box warning';
 
-    if (diffMeters < 0) {
-      actions.push(`<strong>1. Основна причина:</strong> Подадени са с <strong>-${absDiff} м по-малко</strong> жица. Задължително подайте пълния предписан метраж.`);
+    if (diffMeters < -0.5) {
+      actions.push(`<strong>1. Причина:</strong> Подадени са <strong>-${absDiff} м по-малко</strong> жица. Подайте пълния предписан метраж.`);
     } else {
-      actions.push(`<strong>1. Основна мярка (Метраж):</strong> Увеличете предписания метраж жица с <strong>+1.0 м до +1.5 м</strong>.`);
+      actions.push(`<strong>1. Метраж:</strong> Увеличете заложения метраж с <strong>+1.0 м до +1.5 м</strong> за следващата кофа.`);
     }
 
     if (currentSpeed < OPTIMAL_SPEED_MAX) {
       suggestedSpeed = Math.min(OPTIMAL_SPEED_MAX, currentSpeed + 1);
-      actions.push(`<strong>2. Препоръка за скорост:</strong> Повишете скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
+      actions.push(`<strong>2. Скорост:</strong> Повишете скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
     } else {
-      actions.push(`<strong>2. Препоръка за скорост:</strong> Запазете скоростта от ${currentSpeed} м/мин.`);
+      actions.push(`<strong>2. Скорост:</strong> Запазете текущата скорост от ${currentSpeed} м/мин.`);
     }
   }
-  // 2D. КРИТИЧНО НИСЪК Mg (< 0.040%)
+  // 2D. КРИТИЧНО НИСЪК Mg (< 0.035%) -> Червен цвят
   else if (isMgCriticalLow) {
     operatorStatus.textContent = `${lengthStatusText} | Критично нисък Mg (${residualMg}%).`;
     operatorStatus.className = 'status-box danger';
 
-    mgStatus.textContent = `Критично нисък Mg (${residualMg}% < 0.040%). Риск от брак!`;
+    mgStatus.textContent = `КРИТИЧНО НИСЪК Mg (${residualMg}% < ${MG_WARN_MIN}%): Риск от бракуване!`;
     mgStatus.className = 'status-box danger';
 
-    if (diffMeters < 0) {
+    if (diffMeters < -0.5) {
       actions.push(`<strong>1. Грешка при дозирането:</strong> Недостиг от <strong>-${absDiff} м</strong>! Подайте пълния метраж +1.0 м за компенсация.`);
     } else {
-      actions.push(`<strong>1. Задължителна мярка (Метраж):</strong> Увеличете заложения метраж с <strong>+2.0 м до +2.5 м</strong>.`);
+      actions.push(`<strong>1. Задължителна мярка:</strong> Увеличете заложения метраж с <strong>+2.0 м до +2.5 м</strong>.`);
     }
 
     if (currentSpeed < ABSOLUTE_SPEED_MAX) {
       suggestedSpeed = Math.min(ABSOLUTE_SPEED_MAX, currentSpeed + 2);
-      actions.push(`<strong>2. Препоръчителна скорост:</strong> Оптимизирайте скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
+      actions.push(`<strong>2. Скорост:</strong> Увеличете скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
     } else {
       suggestedSpeed = ABSOLUTE_SPEED_MAX;
-      actions.push(`<strong>2. Препоръчителна скорост:</strong> Задържа се на тавана от ${ABSOLUTE_SPEED_MAX} м/мин.`);
+      actions.push(`<strong>2. Скорост:</strong> Скоростта е на максимално допустимия таван (${ABSOLUTE_SPEED_MAX} м/мин).`);
     }
   } 
-  // 2E. НАДВИШЕНА ТВЪРДА ГОРНА ГРАНИЦА (> 0.060%)
+  // 2E. ТВЪРДО ПРЕМОДИФИЦИРАНЕ (> 0.060%) -> Червен цвят
   else if (isMgStrictOver) {
-    operatorStatus.textContent = `${lengthStatusText} | Премодифициране (${residualMg}% > 0.060%).`;
+    operatorStatus.textContent = `${lengthStatusText} | Премодифициране (${residualMg}% > ${MG_TARGET_MAX}%).`;
     operatorStatus.className = 'status-box danger';
 
-    mgStatus.textContent = `ПРЕВИШЕНА ГОРНА ГРАНИЦА: Твърда граница!`;
+    mgStatus.textContent = `ПРЕВИШЕНА ГОРНА ГРАНИЦА: Остатъчният Mg надвишава ${MG_TARGET_MAX}%!`;
     mgStatus.className = 'status-box danger';
 
-    if (diffMeters > 0) {
-      actions.push(`<strong>1. Основна причина:</strong> Преразход от <strong>+${absDiff} м</strong>! Справете се с предозирането.`);
+    if (diffMeters > 0.5) {
+      actions.push(`<strong>1. Задължителен метраж:</strong> Отчетено е предозиране (+${absDiff} м). Спазвайте точното предписание и го намалете с <strong>-1.5 м</strong>.`);
     } else {
-      actions.push(`<strong>1. Задължителна мярка (Метраж):</strong> Намалете заложения метраж с <strong>-1.5 м до -2.0 м</strong>.`);
+      actions.push(`<strong>1. Задължителен метраж:</strong> Силно премодифициране! Намалете заложения метраж за следващата кофа с <strong>-1.5 м до -2.0 м</strong>.`);
     }
 
     if (currentSpeed > ABSOLUTE_SPEED_MIN) {
       suggestedSpeed = Math.max(ABSOLUTE_SPEED_MIN, currentSpeed - 1);
-      actions.push(`<strong>2. Препоръка за скорост:</strong> Намалете скоростта на <strong>${suggestedSpeed} м/мин</strong>.`);
+      actions.push(`<strong>2. Задължителна скорост:</strong> Намалете скоростта от ${currentSpeed} на <strong>${suggestedSpeed} м/мин</strong>.`);
     } else {
       suggestedSpeed = ABSOLUTE_SPEED_MIN;
-      actions.push(`<strong>2. Препоръка за скорост:</strong> Запазете ${ABSOLUTE_SPEED_MIN} м/мин.`);
+      actions.push(`<strong>2. Задължителна скорост:</strong> Запазете долната граница от ${ABSOLUTE_SPEED_MIN} м/мин.`);
     }
   }
 
