@@ -111,7 +111,7 @@ function calculateMg() {
   const currentSpeed = parseFloat(document.getElementById('speedOfWireStep2').value);
 
   if (isNaN(m1) || isNaN(s1) || isNaN(actualLength) || isNaN(residualMg)) {
-    alert('Моля, въведете фактически вложената жица и остатъчния Mg!');
+    alert('Моля, въведете реално вложената жица и остатъчния Mg!');
     return;
   }
 
@@ -205,7 +205,7 @@ function calculateMg() {
   }
   // 2C. ЗОНА ЗА ВНИМАНИЕ (0.040% - 0.042%)
   else if (isMgWarning) {
-    operatorStatus.textContent = `${lengthStatusText} | Mg пада кoм критичната граница (${residualMg}%).`;
+    operatorStatus.textContent = `${lengthStatusText} | Mg пада към критичната граница (${residualMg}%).`;
     operatorStatus.className = 'status-box warning';
 
     mgStatus.textContent = `Предупреждение: Необходима е превантивна корекция.`;
