@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="bg" data-theme="foundry">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Метал Модификатор | Модифициране с жица</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    try { var t = localStorage.getItem('mgModifierTheme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body data-step="1">
+
+<main class="app">
+
+  <!-- Хедър -->
+  <header class="app-header">
+    <div class="brand">
+      <img src="bg.png" alt="Лого" class="brand-logo" onerror="this.style.display='none'">
+      <div>
+        <h1>Метал Модификатор</h1>
+        <p>Калкулатор за модифициране с Mg жица</p>
+      </div>
+    </div>
+    <div class="header-tools">
+      <div class="live-pill" id="livePill"><span class="dot"></span><span id="livePillText">Готов</span></div>
+      <div class="theme-switch" role="group" aria-label="Цветова тема">
+        <button type="button" data-theme-set="foundry" title="Леярна"><i class="sw-foundry"></i></button>
+        <button type="button" data-theme-set="night" title="Нощна смяна"><i class="sw-night"></i></button>
+        <button type="button" data-theme-set="day" title="Светъл цех"><i class="sw-day"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Стъпки (само на телефон/таблет) -->
+  <nav class="stepper">
+    <button id="tab1" class="step active" onclick="switchTab(1)">
+      <span class="step-num">1</span>
+      <span class="step-text"><b>Изчисляване</b><small>Метраж жица</small></span>
+    </button>
+    <div class="step-line"><i id="stepLineFill"></i></div>
+    <button id="tab2" class="step" onclick="switchTab(2)">
+      <span class="step-num">2</span>
+      <span class="step-text"><b>Анализ</b><small>Лаборатория и корекция</small></span>
+    </button>
+  </nav>
+
+  <div class="workspace">
+
+    <!-- ===== КОЛОНА 1: ВХОДНИ ДАННИ ===== -->
+    <div class="col col-inputs">
+
+      <div class="card" data-step-show="1">
+        <div class="card-title"><span><span class="title-num">1</span>Кофа</span></div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="m1">Вместимост на кофата</label>
+            <div class="control">
+              <button type="button" class="nudge" data-target="m1" data-step="-50" tabindex="-1" aria-label="Намали">−</button>
+              <div class="input-wrap">
+                <button type="button" class="clear" tabindex="-1" aria-label="Изчисти">×</button>
+                <input type="text" id="m1" value="1000" inputmode="decimal" autocomplete="off" enterkeyhint="next"
+                       data-step="50" data-default="1000" data-next="s1">
+                <span class="unit">кг</span>
+              </div>
+              <button type="button" class="nudge" data-target="m1" data-step="50" tabindex="-1" aria-label="Увеличи">+</button>
+            </div>
+            <div class="hint">± по 50 кг</div>
+          </div>
+          <div class="field">
+            <label for="s1">Начална сяра (S)</label>
+            <div class="control">
+              <button type="button" class="nudge" data-target="s1" data-step="-0.001" tabindex="-1" aria-label="Намали">−</button>
+              <div class="input-wrap">
+                <button type="button" class="clear" tabindex="-1" aria-label="Изчисти">×</button>
+                <input type="text" id="s1" value="0.020" inputmode="decimal" autocomplete="off" enterkeyhint="next"
+                       data-step="0.001" data-default="0.020" data-short="0.001" data-unit="%" data-next="lenghtOfWire">
+                <span class="unit">%</span>
+              </div>
+              <button type="button" class="nudge" data-target="s1" data-step="0.001" tabindex="-1" aria-label="Увеличи">+</button>
+            </div>
+            <div class="hint">Кратко: 20 = 0.020</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-step-show="1">
+        <div class="card-title">Скорост на подаване <span class="speed-val" id="speedValueDisplay">22 м/мин</span></div>
+        <div class="speed-select"></div>
+        <div class="legend">
+          <span><i class="ok"></i>Оптимално 21–23</span>
+          <span><i class="warn"></i>Корекция 20 / 24</span>
+        </div>
+      </div>
+
+      <div class="target-banner mobile-only" data-step-show="2">
+        <span>Предписание от стъпка 1</span>
+        <strong id="targetWireSummary">– м</strong>
+      </div>
+
+      <div class="card" data-step-show="2">
+        <div class="card-title"><span><span class="title-num">2</span>Лабораторен резултат</span></div>
+        <div class="grid-2">
+          <div class="field">
+            <div class="label-row">
+              <label for="lenghtOfWire">Вложена жица</label>
+              <button type="button" class="link-btn" id="useTarget" title="Върни към предписанието">= предп.</button>
+            </div>
+            <div class="control">
+              <button type="button" class="nudge" data-target="lenghtOfWire" data-step="-0.5" tabindex="-1" aria-label="Намали">−</button>
+              <div class="input-wrap">
+                <button type="button" class="clear" tabindex="-1" aria-label="Изчисти">×</button>
+                <input type="text" id="lenghtOfWire" inputmode="decimal" autocomplete="off" enterkeyhint="next" placeholder="28.5"
+                       data-step="0.5" data-next="residualMg">
+                <span class="unit">м</span>
+              </div>
+              <button type="button" class="nudge" data-target="lenghtOfWire" data-step="0.5" tabindex="-1" aria-label="Увеличи">+</button>
+            </div>
+            <div class="hint">± по 0.5 м</div>
+          </div>
+          <div class="field">
+            <label for="residualMg">Остатъчен Mg</label>
+            <div class="control">
+              <button type="button" class="nudge" data-target="residualMg" data-step="-0.001" tabindex="-1" aria-label="Намали">−</button>
+              <div class="input-wrap">
+                <button type="button" class="clear" tabindex="-1" aria-label="Изчисти">×</button>
+                <input type="text" id="residualMg" inputmode="decimal" autocomplete="off" enterkeyhint="go" placeholder="0.045"
+                       data-step="0.001" data-default="0.045" data-short="0.001" data-unit="%" data-next="analyze">
+                <span class="unit">%</span>
+              </div>
+              <button type="button" class="nudge" data-target="residualMg" data-step="0.001" tabindex="-1" aria-label="Увеличи">+</button>
+            </div>
+            <div class="hint">Кратко: 45 = 0.045</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mobile-only" data-step-show="2">
+        <div class="card-title">Работна скорост <span class="speed-val" id="speedValueDisplayStep2">22 м/мин</span></div>
+        <div class="speed-select"></div>
+      </div>
+
+      <button class="btn-primary btn-analyze" data-step-show="2" onclick="calculateMg()">
+        Анализирай и изчисли корекция <kbd>Enter</kbd>
+      </button>
+    </div>
+
+    <!-- ===== КОЛОНА 2: РЕЗУЛТАТИ ===== -->
+    <div class="col col-results">
+
+      <div class="card hero" data-step-show="1">
+        <div class="hero-label">Препоръчителен метраж</div>
+        <div class="hero-value"><span id="wireResultDisplay">–</span><small>м</small></div>
+        <div class="hero-meta">
+          <span class="chip">Подаване <b id="feedTime">–</b></span>
+          <span class="chip">Усвояване <b>35%</b></span>
+        </div>
+        <div id="speedStatus" class="status info">Изберете скорост, за да видите препоръки.</div>
+      </div>
+
+      <button class="btn-primary mobile-only" data-step-show="1" onclick="switchTab(2)">Към лабораторния анализ <span>→</span></button>
+
+      <div id="mgAnalysisBox" class="results is-empty" data-step-show="2">
+
+        <div class="card ring-card">
+          <div class="card-title">Реално усвояване</div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120" class="ring">
+              <circle cx="60" cy="60" r="52" class="ring-bg"/>
+              <circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/>
+            </svg>
+            <div class="ring-center">
+              <span id="mgResultDisplay">–</span>
+              <small>%</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="card next-card">
+          <div class="card-title">Скорост за следваща кофа</div>
+          <div class="next-speed"><span id="recommendedSpeedDisplay">–</span><small>м/мин</small></div>
+          <div class="delta" id="speedDelta"></div>
+        </div>
+
+        <div class="card mg-card">
+          <div class="card-title">Остатъчен Mg <b class="tag" id="mgValueTag">–</b></div>
+          <div class="scale">
+            <div class="scale-track" id="mgTrack"></div>
+            <div class="scale-marker" id="mgMarker"></div>
+          </div>
+          <div class="scale-ticks" id="mgTicks"></div>
+        </div>
+
+        <div class="card bars-card">
+          <div class="card-title">Метраж <b class="tag" id="devTag">–</b></div>
+          <div class="bars">
+            <div class="bar-row"><span>Предписано</span><div class="bar"><i id="barTarget"></i></div><b id="barTargetVal">–</b></div>
+            <div class="bar-row"><span>Вложено</span><div class="bar"><i id="barActual"></i></div><b id="barActualVal">–</b></div>
+          </div>
+        </div>
+
+        <div id="operatorStatus" class="status"></div>
+        <div id="mgStatus" class="status"></div>
+
+        <div class="card actions-card">
+          <div class="card-title">Технологични корекции</div>
+          <ol class="actions" id="actionPlanList"></ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== КОЛОНА 3: ЖУРНАЛ ===== -->
+    <aside class="col journal" data-step-show="2">
+      <div class="card">
+        <div class="card-title">Журнал на кофите <button type="button" class="link-btn" id="clearHistory">Изчисти</button></div>
+        <div id="historyList" class="history"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer class="app-footer">
+    <button class="reset-link" onclick="resetAll()">↺ Нулиране на данните</button>
+    <div class="dev-tag">Разработка: <span>инж. Иван Колев</span></div>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
